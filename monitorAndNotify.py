@@ -12,23 +12,6 @@ import json
 
 # initialize databse name
 dbname = 'sensehat.db'
-# get the current time
-# time = datetime.now().strftime("%H:%M")
-
-def create_table(dbname):
-  # make a connection and create a database if doesn't exist
-  conn = sqlite3.connect(dbname)
-  with conn: 
-      # set up the cursor
-      cur = conn.cursor() 
-      # drop table if any exists
-      cur.execute("DROP TABLE IF EXISTS SENSEHAT_data")
-      # create a table to store current time, temperature, humidity
-      cur.execute("CREATE TABLE SENSEHAT_data(timestamp DATETIME, temp NUMERIC, hum NUMERIC)")
-  # commit changes
-  conn.commit()
-  # close the connection
-  conn.close()
 
 def get_cpu_temp():
   res = os.popen("vcgencmd measure_temp").readline()
@@ -100,18 +83,41 @@ def check_temp_hum(dbname, file_name):
   for row in curs.execute("SELECT * FROM SENSEHAT_data"):
       row_l = list(row)
       print(row_l)
-      if (row_l[1] > max_temperature or row_l[1] < min_temperature) or (row_l[2] > max_humidity or row_l[2] < min_humidity):
-        print('The temperature or the humidity is out of the range\
-          Temperature range is (', min_temperature, '-', max_temperature, ')\
-            Humidity range is (', min_humidity, '-', max_humidity, ')')
-      else:
+      if ((row_l[1] > min_temperature) and (row_l[1] < max_temperature)) and ((row_l[2] > min_humidity) and (row_l[2] < max_humidity)):
         print(row_l)
+      else:
+        # print('The temperature or the humidity is out of the range')
+        # print('Temperature range is (', min_temperature, '-', max_temperature, ')')
+        # print('Humidity range is (', min_humidity, '-', max_humidity, ')')
+        execute_notification()
   conn.close()
 
 
 
+ACCESS_TOKEN="o.w75BDnf5ujJdrsQ15ZcjFB3je03NEn3C"
+
+def send_notification_via_pushbullet(title, body):
+    """ Sending notification via pushbullet.
+        Args:
+            title (str) : title of text.
+            body (str) : Body of text.
+    """
+    data_send = {"type": "note", "title": title, "body": body}
+ 
+    resp = requests.post('https://api.pushbullet.com/v2/pushes', data=json.dumps(data_send),
+                         headers={'Authorization': 'Bearer ' + ACCESS_TOKEN, 
+                         'Content-Type': 'application/json'})
+    if resp.status_code != 200:
+        raise Exception('Something wrong')
+    else:
+        print('complete sending')
+
+def execute_notification():
+  ip_address = os.popen('hostname -I').read()
+  send_notification_via_pushbullet(ip_address, "The temperature or the humidity is out of the range")
+
+
 # call methods
-create_table(dbname)
 logData(dbname, measure_temp_hum)
 # displayData(dbname)
 check_temp_hum(dbname, 'config.json')
