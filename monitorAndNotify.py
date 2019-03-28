@@ -51,15 +51,6 @@ def logData(dbname, measure_temp_hum):
   # close the connection
   conn.close()
 
-# display database data
-def displayData(dbname):
-  conn=sqlite3.connect(dbname)
-  curs=conn.cursor()
-  print ("\nEntire database contents:\n")
-  for row in curs.execute("SELECT * FROM SENSEHAT_data"):
-      print (row)
-  conn.close()
-
 
 # check the temperature or humidity
 def check_temp_hum(dbname, file_name):
@@ -80,17 +71,33 @@ def check_temp_hum(dbname, file_name):
 
   conn=sqlite3.connect(dbname)
   curs=conn.cursor()
+  date_list = []
   for row in curs.execute("SELECT * FROM SENSEHAT_data"):
       row_l = list(row)
-      print(row_l)
-      if ((row_l[1] > min_temperature) and (row_l[1] < max_temperature)) and ((row_l[2] > min_humidity) and (row_l[2] < max_humidity)):
-        print(row_l)
+      date_list.append(row_l[0].split()[0])
+      # print(row_l)
+      if row_l[0].split()[0] not in date_list:
+        if ((row_l[1] > min_temperature) and (row_l[1] < max_temperature)) and ((row_l[2] > min_humidity) and (row_l[2] < max_humidity)):
+          print(row_l)
+        else:
+          # send notification
+          execute_notification()
       else:
-        # print('The temperature or the humidity is out of the range')
-        # print('Temperature range is (', min_temperature, '-', max_temperature, ')')
-        # print('Humidity range is (', min_humidity, '-', max_humidity, ')')
-        execute_notification()
+        print('Notification has been sent already for this day')
+        print(date_list)
+        break
   conn.close()
+
+
+
+# display database data
+def displayData():
+    conn=sqlite3.connect(dbname)
+    curs=conn.cursor()
+    print ("\nEntire database contents:\n")
+    for row in curs.execute("SELECT DISTINCT timestamp FROM SenseHat_data"):
+        print (row)
+    conn.close()
 
 
 
@@ -121,3 +128,4 @@ def execute_notification():
 logData(dbname, measure_temp_hum)
 # displayData(dbname)
 check_temp_hum(dbname, 'config.json')
+# displayData()
