@@ -71,21 +71,26 @@ def check_temp_hum(dbname, file_name):
 
   conn=sqlite3.connect(dbname)
   curs=conn.cursor()
-  date_list = []
+
   for row in curs.execute("SELECT * FROM SENSEHAT_data"):
-      row_l = list(row)
-      date_list.append(row_l[0].split()[0])
-      # print(row_l)
-      if row_l[0].split()[0] not in date_list:
-        if ((row_l[1] > min_temperature) and (row_l[1] < max_temperature)) and ((row_l[2] > min_humidity) and (row_l[2] < max_humidity)):
-          print(row_l)
-        else:
-          # send notification
-          execute_notification()
-      else:
-        print('Notification has been sent already for this day')
-        print(date_list)
-        break
+      sensehat_row_l = list(row)
+      curr_date = sensehat_row_l[0].split()[0]
+
+      for row in curs.execute("SELECT * FROM NOTIFICATION_data"):
+          notification_row_l = list(row)
+          notification_date = notification_row_l[0].split()[0]
+          if curr_date == notification_date:
+            break
+
+          else:
+            if ((sensehat_row_l[1] > min_temperature) and (sensehat_row_l[1] < max_temperature)) and ((sensehat_row_l[2] > min_humidity) and (sensehat_row_l[2] < max_humidity)):
+              print(sensehat_row_l)
+            else:
+              # send notification
+              execute_notification()
+                # insert data into the table
+              curs.execute("INSERT INTO NOTIFICATION_data values(?)", (notification_date))
+
   conn.close()
 
 
