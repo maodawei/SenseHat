@@ -1,6 +1,9 @@
-import os
+# import packages
 import requests
+import os
 import json
+from db import database
+
 class notification:
 
     @staticmethod
@@ -20,7 +23,23 @@ class notification:
         else:
             print('complete sending')
            
+    # This function either sends notification or print a message
+    # stating that a message has been sent today
     @staticmethod
     def execute_notification():
-        ip_address = os.popen('hostname -I').read()
-        notification.send_notification_via_pushbullet(ip_address, "The temperature or the humidity is out of the range")
+        # call getNotificationTimes function from database which return either 0 or 1
+        # if it returns 1, then that means that a notification has not been sent today
+        check = database.getNotificationTimes()
+        if check == 1:
+            # send a notifiaction 
+            ip_address = os.popen('hostname -I').read()
+            # specified a message to display in the device we're sending notification to
+            notification.send_notification_via_pushbullet(ip_address, "The temperature or the humidity is out of the range")
+            # insert the current date when we send a notification to the notification table
+            # so that we don't send a notification again in that date
+            # this can be accomplished by calling insertNotificationTime function from database class
+            database.insertNotificationTime()
+        # if returns 0, that means a message has already been sent today.
+        # So we print a message
+        else:
+            print('Notification has been sent already for this day!')
