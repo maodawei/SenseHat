@@ -49,11 +49,12 @@ def logData(dbname, measure_temp_hum):
   # commit changes
   conn.commit()
   # close the connection
-  # conn.close()
+  conn.close()
 
 
 # check the temperature or humidity
 def check_temp_hum(dbname, file_name):
+
   def read_json(file_name):
     with open(file_name, 'r') as json_file:
       json_data = json.load(json_file)
@@ -71,34 +72,26 @@ def check_temp_hum(dbname, file_name):
   conn=sqlite3.connect(dbname)
   curs=conn.cursor()
 
-  for sensehat_row_l in curs.execute("SELECT * FROM SENSEHAT_data"):
-      # curr_date = list(sensehat_row_l.split()[0])
-      print(sensehat_row_l)
-      notification_data = curs.execute("SELECT COUNT(*) FROM NOTIFICATION_data")
-      print(notification_data)
+  for row in curs.execute("SELECT * FROM SENSEHAT_data"):
+      sensehat_row_l = list(row)
+      curr_date = sensehat_row_l[0].split()[0]
 
-      # for row_in_noification in curs.execute("SELECT * FROM NOTIFICATION_data"):
-      #     print(row_in_noification)
-      #     print('row_in_noification is printing')
-      #     break
-      #     notification_row_l = list(row_in_noification)
-      #     print(notification_row_l)
-      #     notification_date = notification_row_l[0].split()[0]
-      #     if curr_date == notification_date:
-      #       print('date is in the notification table')
-      #       break
+      for row in curs.execute("SELECT * FROM NOTIFICATION_data"):
+          notification_row_l = list(row)
+          notification_date = notification_row_l[0].split()[0]
+          if curr_date == notification_date:
+            break
 
-      #     else:
-      #       if ((sensehat_row_l[1] > min_temperature) and (sensehat_row_l[1] < max_temperature)) and ((sensehat_row_l[2] > min_humidity) and (sensehat_row_l[2] < max_humidity)):
-      #         print(sensehat_row_l)
-      #       else:
-      #         # send notification
-      #         print('out of range')
-      #         execute_notification()
-      #           # insert data into the table
-      #         curs.execute("INSERT INTO NOTIFICATION_data values(?)", (notification_date))
+          else:
+            if ((sensehat_row_l[1] > min_temperature) and (sensehat_row_l[1] < max_temperature)) and ((sensehat_row_l[2] > min_humidity) and (sensehat_row_l[2] < max_humidity)):
+              print(sensehat_row_l)
+            else:
+              # send notification
+              execute_notification()
+              # insert data into the table
+              curs.execute("INSERT INTO NOTIFICATION_data values(?)", (notification_date))
 
-  # conn.close()
+  conn.close()
 
 
 
@@ -109,7 +102,7 @@ def displayData():
     print ("\nEntire database contents:\n")
     for row in curs.execute("SELECT DISTINCT timestamp FROM SenseHat_data"):
         print (row)
-    # conn.close()
+    conn.close()
 
 
 
