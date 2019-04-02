@@ -42,7 +42,7 @@ class temperature:
         min_temperature, max_temperature, min_humidity, max_humidity =jsonreading.read_json(file_name)
         # call the function getEnvironmentData from the database class
         # which would return current temperature and humidity
-        sensehat_temp, sensehat_hum = database.getEnvironmentData()
+        _, sensehat_temp, sensehat_hum = database.getEnvironmentData()
         # check if the current temperature and humidity is within the specified range
         if(sensehat_temp > min_temperature and sensehat_temp < max_temperature and sensehat_hum > min_humidity and sensehat_hum < max_humidity):
             # if current temperature and humidity is within the range, print them

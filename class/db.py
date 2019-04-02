@@ -68,7 +68,7 @@ class database:
             hum = list_of_rows[-1][-1]
 
             # return both tmeperature and humidity
-            return temp, hum
+            return list_of_rows, temp, hum
     
     @staticmethod
     def getNotificationTimes():
