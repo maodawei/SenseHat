@@ -47,7 +47,7 @@ def logData(dbname, measure_temp_hum):
   # insert data into the table
   curs.execute("INSERT INTO SENSEHAT_data values(datetime('now'), ?, ?)", (temp,hum))
   # commit changes
-  conn.commit()
+  # conn.commit()
   # close the connection
   # conn.close()
 
