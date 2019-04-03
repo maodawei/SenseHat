@@ -43,7 +43,7 @@ class database:
         # return connection
         return conn
 
-    @staticmethod
+    @staticmethod 
     # this function inserts temperature and humidity into a table
     def insertEnvironmentData(temp, hum):
         # call the connection function and assign it to a variable
@@ -116,7 +116,7 @@ class database:
     
     # this function insert current date to the notification table
     @staticmethod
-    def insertNotificationTime():
+    def insertIntoTable(string tableName):
         # connect to the database
         conn=database.connection()
         # get today's date 
@@ -125,19 +125,32 @@ class database:
             # set up the cursor
             curs=conn.cursor()
             # insert today's date to the notification table
-            curs.execute("INSERT INTO NOTIFICATION_data values(?)", (today_date,))
+            curs.execute("INSERT INTO ? values(?)", (tableName, today_date,))
+
+    # this function insert current date to the notification table
+    # @staticmethod
+    # def insertNotificationTime():
+    #     # connect to the database
+    #     conn=database.connection()
+    #     # get today's date 
+    #     today_date = str(date.today())
+    #     with conn:
+    #         # set up the cursor
+    #         curs=conn.cursor()
+    #         # insert today's date to the notification table
+    #         curs.execute("INSERT INTO NOTIFICATION_data values(?)", (today_date,))
     
-    @staticmethod
-    def insertBluetoothNotificationTime():
-        # connect to the database
-        conn=database.connection()
-        # get today's date 
-        today_date = str(date.today())
-        with conn:
-            # set up the cursor
-            curs=conn.cursor()
-            # insert today's date to the notification table
-            curs.execute("INSERT INTO BLUETOOTH_notification values(?)", (today_date,))
+    # @staticmethod
+    # def insertBluetoothNotificationTime():
+    #     # connect to the database
+    #     conn=database.connection()
+    #     # get today's date 
+    #     today_date = str(date.today())
+    #     with conn:
+    #         # set up the cursor
+    #         curs=conn.cursor()
+    #         # insert today's date to the notification table
+    #         curs.execute("INSERT INTO BLUETOOTH_notification values(?)", (today_date,))
     
     @staticmethod
     def getBluetoothNotificationTimes():
