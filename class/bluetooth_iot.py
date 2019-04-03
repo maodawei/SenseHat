@@ -2,7 +2,7 @@ import bluetooth
 import os
 import time
 from notification import notification
-from sense_hat import SenseHat
+from environment import temperature
 class bluetooth_iot:
 
     @staticmethod
@@ -22,8 +22,8 @@ class bluetooth_iot:
                     break
             if device_address is not None:
                 print("Hi {}! Your phone ({}) has the MAC address: {}".format(user_name, device_name, device_address))
-                sense = SenseHat()
-                temp = round(sense.get_temperature(), 1)
-                sense.show_message("Hi {}! Current Temp is {}*c".format(user_name, temp), scroll_speed=0.05)
+                temp,hum=temperature.measure_temp_hum()
+                notification.bluetooth_notification(temp,hum)
+                
             else:
                 print("Could not find target device nearby...")

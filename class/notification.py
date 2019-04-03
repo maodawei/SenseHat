@@ -42,4 +42,17 @@ class notification:
         # if returns 0, that means a message has already been sent today.
         # So we print a message
         else:
-            print('Notification has been sent already for this day!')
+            print('Notification has been sent today!')
+    
+    @staticmethod
+    def bluetooth_notification(temp,hum):
+        check = database.getBluetoothNotificationTimes()
+        ip_address = os.popen('hostname -I').read()
+        if check == 1:
+            ip_address=os.popen('hostname -I').read()
+            str='The tempreture is ? The humidity is ?',(temp,hum)
+            notification.send_notification_via_pushbullet(ip_address,str)
+            database.insertBluetoothNotificationTime()
+        else:
+            print('Bluetooth Notification has been sent today!')
+
