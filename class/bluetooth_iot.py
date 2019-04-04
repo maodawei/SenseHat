@@ -2,7 +2,7 @@ import bluetooth
 import os
 import time
 from notification import notification
-from environment import temperature
+from monitorAndNotify import temperature
 class bluetooth_iot:
 
     @staticmethod
@@ -27,3 +27,5 @@ class bluetooth_iot:
                 
             else:
                 print("Could not find target device nearby...")
+
+bluetooth_iot.search()

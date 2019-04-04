@@ -29,6 +29,8 @@ class temperature:
         t_corr = t - ((t_cpu-t)/1.5)
         # print("t=%.1f  t_cpu=%.1f  t_corr=%.1f  h=%d  p=%d" % (t, t_cpu, t_corr, round(h)))
         # return both termpreature after correction and humidity
+        if temperature.validation_data(t,h) == False:
+            temperature.measure_temp_hum()
         return round(t_corr), round(h)
     
     # this function checks the humidity and temperature if either is out the specified range in the json file
@@ -51,3 +53,16 @@ class temperature:
         else:
             notification.execute_notification()
     
+    @staticmethod
+    def validation_data(temp,hum):
+        if temp==0 or hum ==0:
+            return False
+        return True
+        
+#database.create_tables()
+# get the current temperature and humidity from raspberry
+temp, hum = temperature.measure_temp_hum()
+# insert the data into SENSEHAT_data table
+database.insertEnvironmentData(temp, hum)
+# check to sent notification or not
+temperature.check_temp_hum('config.json')
