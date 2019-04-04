@@ -52,8 +52,10 @@ class database:
         with conn:
             # set the cursor
             curs=conn.cursor()
-            # insert data into the specified table
-            curs.execute("INSERT INTO SENSEHAT_data values(datetime('now'),?,?)",(temp,hum))
+            tableName='SENSEHAT_data'
+            if database.checkTableExists(curs,tableName)==True:
+                # insert data into the specified table
+                curs.execute("INSERT INTO SENSEHAT_data values(datetime('now'),?,?)",(temp,hum))
     
     # This function retrieve the last inserted data into SENSEHAT_data
     # It returns both temperature and humidity
@@ -64,16 +66,18 @@ class database:
         with conn:
             # set the cursor
             curs=conn.cursor()
-            # assign the the table's data into a variable named list_of_rows
-            # after converting the sqlite object into a python list
-            list_of_rows = list(curs.execute("SELECT * FROM SENSEHAT_data"))
-            # assign the tmeperature of the last row to a variable named temp
-            temp = list_of_rows[-1][-2]
-            # assign the humidity of the last row to a variable named hum
-            hum = list_of_rows[-1][-1]
+            tableName='SENSEHAT_data'
+            if database.checkTableExists(curs,tableName)==True:
+                # assign the the table's data into a variable named list_of_rows
+                # after converting the sqlite object into a python list
+                list_of_rows = list(curs.execute("SELECT * FROM SENSEHAT_data"))
+                # assign the tmeperature of the last row to a variable named temp
+                temp = list_of_rows[-1][-2]
+                # assign the humidity of the last row to a variable named hum
+                hum = list_of_rows[-1][-1]
 
-            # return both tmeperature and humidity
-            return list_of_rows, temp, hum
+                # return both tmeperature and humidity
+                return list_of_rows, temp, hum
     
     @staticmethod
     def getNotificationTimes():
@@ -90,30 +94,32 @@ class database:
         with conn:
             # set up the cursor
             curs=conn.cursor()
-            # check if there table is empty
-            if not list(curs.execute("SELECT * FROM NOTIFICATION_data")):
-                # return 0 if there table is empty
-                return 1
-            # the table has data
-            else:
-                # assign the data from the notification table to a variable named last_row
-                # after converting it from a sqlite3 object to a python list
-                last_row = list(curs.execute("SELECT * FROM NOTIFICATION_data"))
-                # assign the last added date to a variable named last_time
-                last_time = last_row[-1][0]
-                # get today's date 
-                today_date = str(date.today())
-                # compare the last added date to the notification table
-                # to today's date. If they are not equal, than that means
-                # the currnent date is not in the table and we have not
-                # sent notification today
-                if today_date != last_time:
-                    # return 1
+            tableName='NOTIFICATION_data'
+            if database.checkTableExists(curs,tableName)==True:
+                # check if there table is empty
+                if not list(curs.execute("SELECT * FROM NOTIFICATION_data")):
+                    # return 0 if there table is empty
                     return 1
-                # else: we have sent notification today 
+                # the table has data
                 else:
-                    # return 0
-                    return 0
+                    # assign the data from the notification table to a variable named last_row
+                    # after converting it from a sqlite3 object to a python list
+                    last_row = list(curs.execute("SELECT * FROM NOTIFICATION_data"))
+                    # assign the last added date to a variable named last_time
+                    last_time = last_row[-1][0]
+                    # get today's date 
+                    today_date = str(date.today())
+                    # compare the last added date to the notification table
+                    # to today's date. If they are not equal, than that means
+                    # the currnent date is not in the table and we have not
+                    # sent notification today
+                    if today_date != last_time:
+                        # return 1
+                        return 1
+                    # else: we have sent notification today 
+                    else:
+                        # return 0
+                        return 0
     
     # this function insert current date to the notification table
     # @staticmethod
@@ -138,10 +144,12 @@ class database:
         # get today's date 
         today_date = str(date.today())
         with conn:
+            tableName='NOTIFICATION_data'
             # set up the cursor
             curs=conn.cursor()
-            # insert today's date to the notification table
-            curs.execute("INSERT INTO NOTIFICATION_data values(?)", (today_date,))
+            if database.checkTableExists(curs,tableName)==True:
+                # insert today's date to the notification table
+                curs.execute("INSERT INTO NOTIFICATION_data values(?)", (today_date,))
     
     @staticmethod
     def insertBluetoothNotificationTime():
@@ -151,10 +159,11 @@ class database:
         today_date = str(date.today())
         with conn:
             # set up the cursor
+            tableName='BLUETOOTH_notification'
             curs=conn.cursor()
             # insert today's date to the notification table
             curs.execute("INSERT INTO BLUETOOTH_notification values(?)", (today_date,))
-    
+
     @staticmethod
     def getBluetoothNotificationTimes():
         # connect to the database
@@ -162,27 +171,36 @@ class database:
         with conn:
             # set up the cursor
             curs=conn.cursor()
-            # check if there table is empty
-            if not list(curs.execute("SELECT * FROM BLUETOOTH_notification")):
-                # return 0 if there table is empty
-                return 1
-            # the table has data
-            else:
-                # assign the data from the notification table to a variable named last_row
-                # after converting it from a sqlite3 object to a python list
-                last_row = list(curs.execute("SELECT * FROM BLUETOOTH_notification"))
-                # assign the last added date to a variable named last_time
-                last_time = last_row[-1][0]
-                # get today's date 
-                today_date = str(date.today())
-                # compare the last added date to the notification table
-                # to today's date. If they are not equal, than that means
-                # the currnent date is not in the table and we have not
-                # sent notification today
-                if today_date != last_time:
-                    # return 1
+            tableName='BLUETOOTH_notification'
+            if database.checkTableExists(curs,tableName)==True:
+                # check if there table is empty
+                if not list(curs.execute("SELECT * FROM BLUETOOTH_notification")):
+                    # return 0 if there table is empty
                     return 1
-                # else: we have sent notification today 
+                # the table has data
                 else:
-                    # return 0
-                    return 0
+                    # assign the data from the notification table to a variable named last_row
+                    # after converting it from a sqlite3 object to a python list
+                    last_row = list(curs.execute("SELECT * FROM BLUETOOTH_notification"))
+                    # assign the last added date to a variable named last_time
+                    last_time = last_row[-1][0]
+                    # get today's date 
+                    today_date = str(date.today())
+                    # compare the last added date to the notification table
+                    # to today's date. If they are not equal, than that means
+                    # the currnent date is not in the table and we have not
+                    # sent notification today
+                    if today_date != last_time:
+                        # return 1
+                        return 1
+                    # else: we have sent notification today 
+                    else:
+                        # return 0
+                        return 0
+    
+    @staticmethod
+    def checkTableExists(curs,tableName):
+        curs.execute("""SELECT COUNT(*) FROM sensehat.db WHERE table_name = '{0}' """.format(tableName.replace('\'', '\'\'')))
+        if curs.fetchone()[0] == 1:
+                return True
+        return False
