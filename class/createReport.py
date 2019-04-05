@@ -71,7 +71,18 @@ class report:
                 
             else:
                 print('LAST ONE')
-                report.appendList(i,curr_date_list,curr_temp_list,curr_hum_list,sensehat_data_results)
+                # extract the date to a variable names row_date
+                row_date = sensehat_data_results[i][0].split()[0]
+                # extract the temperature to a variable names row_temp
+                row_temp = sensehat_data_results[i][1]
+                # extract the humidity to a variable names row_hum
+                row_hum = sensehat_data_results[i][2]
+                # append the date of each row to the date list that we initalized at the top
+                curr_date_list.append(row_date)
+                # append the temperature of each row to the curr_temp_list list that we initalized at the top
+                curr_temp_list.append(row_temp)
+                # append the humidity of each row to the curr_hum_list list that we initalized at the top
+                curr_hum_list.append(row_hum)
                 # assign maximum and minimum temperature and humidity 
                 min_row_temp = min(curr_temp_list)
                 max_row_temp = max(curr_temp_list)
@@ -160,6 +171,21 @@ class report:
                 # write each row of the list to the csv file
                 csv_file.writerow([d, s])
     
+    @staticmethod
+    def appendList(i,curr_date_list,curr_temp_list,curr_hum_list,sensehat_data_results):
+        # extract the date to a variable names row_date
+        row_date = sensehat_data_results[i][0].split()[0]
+        # extract the temperature to a variable names row_temp
+        row_temp = sensehat_data_results[i][1]
+        # extract the humidity to a variable names row_hum
+        row_hum = sensehat_data_results[i][2]
+        # append the date of each row to the date list that we initalized at the top
+        curr_date_list.append(row_date)
+        # append the temperature of each row to the curr_temp_list list that we initalized at the top
+        curr_temp_list.append(row_temp)
+        # append the humidity of each row to the curr_hum_list list that we initalized at the top
+        curr_hum_list.append(row_hum)
+
     @staticmethod
     def clearList(curr_date_list,curr_temp_list,curr_hum_list):
         # clear all lists
