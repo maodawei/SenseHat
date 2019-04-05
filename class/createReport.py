@@ -20,7 +20,7 @@ class report:
     def return_rows(file_name):
         # call the getEnvironmentData from database class and assigne the desired values to a variable
         sensehat_data_results, _, _ = database.getEnvironmentData()
-        
+        print("nano3")
         # initialize three lists to hold only one data for each date
         date = []
         temp = []
@@ -30,12 +30,15 @@ class report:
         curr_date_list = []
         curr_temp_list = []
         curr_hum_list = []
-        
+        print(sensehat_data_results)
         # loop through the list of sql table results
-        for i in range(len(sensehat_data_results) -1):
+        for i in range(len(sensehat_data_results)):
             # check if one row is the same as the one following it
+            print(i)
             if sensehat_data_results[i+1] != sensehat_data_results[-1]:
+                print("zero")
                 if sensehat_data_results[i][0].split()[0] == sensehat_data_results[i+1][0].split()[0]:
+                    print("first")
                     # extract the date to a variable names row_date
                     row_date = sensehat_data_results[i][0].split()[0]
                     # extract the temperature to a variable names row_temp
@@ -50,7 +53,19 @@ class report:
                     curr_hum_list.append(row_hum)
 
                 elif sensehat_data_results[i][0].split()[0] != sensehat_data_results[i+1][0].split()[0]:
-                    report.appendList(i,curr_date_list,curr_temp_list,curr_hum_list,sensehat_data_results)
+                    print("sencond")
+                    # extract the date to a variable names row_date
+                    row_date = sensehat_data_results[i][0].split()[0]
+					# extract the temperature to a variable names row_temp
+                    row_temp = sensehat_data_results[i][1]
+					# extract the humidity to a variable names row_hum
+                    row_hum = sensehat_data_results[i][2]
+					# append the date of each row to the date list that we initalized at the top
+                    curr_date_list.append(row_date)
+					# append the temperature of each row to the curr_temp_list list that we initalized at the top
+                    curr_temp_list.append(row_temp)
+					# append the humidity of each row to the curr_hum_list list that we initalized at the top
+                    curr_hum_list.append(row_hum)
                     # assign maximum and minimum temperature and humidity 
                     min_row_temp = min(curr_temp_list)
                     max_row_temp = max(curr_temp_list)
@@ -159,7 +174,9 @@ class report:
     
     @staticmethod
     def log_to_csv(file_name):
+        print("nano")
         date, status = report.return_rows(file_name)
+        print("nano2")
         # open a csv file if it exists, otherwise create a new one
         with open('report.csv', mode='w') as csv_file:
             # specified the delimiter between columns and quotechar for each column
@@ -170,21 +187,6 @@ class report:
             for d, s in zip(date, status):
                 # write each row of the list to the csv file
                 csv_file.writerow([d, s])
-    
-    @staticmethod
-    def appendList(i,curr_date_list,curr_temp_list,curr_hum_list,sensehat_data_results):
-        # extract the date to a variable names row_date
-        row_date = sensehat_data_results[i][0].split()[0]
-        # extract the temperature to a variable names row_temp
-        row_temp = sensehat_data_results[i][1]
-        # extract the humidity to a variable names row_hum
-        row_hum = sensehat_data_results[i][2]
-        # append the date of each row to the date list that we initalized at the top
-        curr_date_list.append(row_date)
-        # append the temperature of each row to the curr_temp_list list that we initalized at the top
-        curr_temp_list.append(row_temp)
-        # append the humidity of each row to the curr_hum_list list that we initalized at the top
-        curr_hum_list.append(row_hum)
 
     @staticmethod
     def clearList(curr_date_list,curr_temp_list,curr_hum_list):
@@ -192,3 +194,5 @@ class report:
         curr_date_list.clear()
         curr_temp_list.clear()
         curr_hum_list.clear()
+		
+report.log_to_csv('config.json')
