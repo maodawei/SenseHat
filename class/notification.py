@@ -38,22 +38,23 @@ class notification:
             # insert the current date when we send a notification to the notification table
             # so that we don't send a notification again in that date
             # this can be accomplished by calling insertNotificationTime function from database class
-            database.insertNotificationTime()
-            # database.insertIntoTable('NOTIFICATION_data')
+            # database.insertNotificationTime()
+            database.insertIntoTable('NOTIFICATION_data')
         # if returns 0, that means a message has already been sent today.
         # So we print a message
         else:
             print('Notification has been sent today!')
     @staticmethod
+
     def bluetooth_notification(temp,hum):
         check = database.getBluetoothNotificationTimes()
         ip_address = os.popen('hostname -I').read()
         if check == 1:
             ip_address=os.popen('hostname -I').read()
-            str='The tempreture is ? The humidity is ?',(temp,hum)
-            notification.send_notification_via_pushbullet(ip_address,str)
-            database.insertBluetoothNotificationTime()
-            # database.insertIntoTable('BLUETOOTH_notification')
+            message ='The tempreture is {} The humidity is {}'.format(temp,hum)
+            notification.send_notification_via_pushbullet(ip_address, message)
+            # database.insertBluetoothNotificationTime()
+            database.insertIntoTable('BLUETOOTH_notification')
         else:
             print('Bluetooth Notification has been sent today!')
 

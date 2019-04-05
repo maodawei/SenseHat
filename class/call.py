@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # import packages
 from db import database
 from monitorAndNotify import temperature

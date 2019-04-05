@@ -52,11 +52,13 @@ class database:
         with conn:
             # set the cursor
             curs=conn.cursor()
-            tableName='SENSEHAT_data'
-            if database.checkTableExists(curs,tableName)==True:
+            try:
                 # insert data into the specified table
                 curs.execute("INSERT INTO SENSEHAT_data values(datetime('now'),?,?)",(temp,hum))
-    
+            except:
+                print('Table Does not Exist!')
+
+
     # This function retrieve the last inserted data into SENSEHAT_data
     # It returns both temperature and humidity
     @staticmethod
@@ -66,8 +68,7 @@ class database:
         with conn:
             # set the cursor
             curs=conn.cursor()
-            tableName='SENSEHAT_data'
-            if database.checkTableExists(curs,tableName)==True:
+            try:
                 # assign the the table's data into a variable named list_of_rows
                 # after converting the sqlite object into a python list
                 list_of_rows = list(curs.execute("SELECT * FROM SENSEHAT_data"))
@@ -75,9 +76,10 @@ class database:
                 temp = list_of_rows[-1][-2]
                 # assign the humidity of the last row to a variable named hum
                 hum = list_of_rows[-1][-1]
-
+            except:
+                print('Table Does not Exist!')
                 # return both tmeperature and humidity
-                return list_of_rows, temp, hum
+        return list_of_rows, temp, hum
     
     @staticmethod
     def getNotificationTimes():
@@ -94,8 +96,7 @@ class database:
         with conn:
             # set up the cursor
             curs=conn.cursor()
-            tableName='NOTIFICATION_data'
-            if database.checkTableExists(curs,tableName)==True:
+            try:
                 # check if there table is empty
                 if not list(curs.execute("SELECT * FROM NOTIFICATION_data")):
                     # return 0 if there table is empty
@@ -120,49 +121,27 @@ class database:
                     else:
                         # return 0
                         return 0
+            except:
+                print('Table Does Not Exist!')
+
     
     # this function insert current date to the notification table
-    # @staticmethod
-    # def insertIntoTable(tableName):
-    #     # connect to the database
-    #     conn=database.connection()
-    #     # get today's date 
-    #     today_date = str(date.today())
-    #     with conn:
-    #         # set up the cursor
-    #         curs=conn.cursor()
-    #         # insert today's date to the notification table
-    #         curs.execute("INSERT INTO {} values(?)", (today_date,))
-
-
-
-    # this function insert current date to the notification table
     @staticmethod
-    def insertNotificationTime():
+    def insertIntoTable(tableName):
         # connect to the database
         conn=database.connection()
         # get today's date 
         today_date = str(date.today())
         with conn:
-            tableName='NOTIFICATION_data'
             # set up the cursor
             curs=conn.cursor()
-            if database.checkTableExists(curs,tableName)==True:
+            if tableName == 'NOTIFICATION_data':
                 # insert today's date to the notification table
-                curs.execute("INSERT INTO NOTIFICATION_data values(?)", (today_date,))
-    
-    @staticmethod
-    def insertBluetoothNotificationTime():
-        # connect to the database
-        conn=database.connection()
-        # get today's date 
-        today_date = str(date.today())
-        with conn:
-            # set up the cursor
-            tableName='BLUETOOTH_notification'
-            curs=conn.cursor()
-            # insert today's date to the notification table
-            curs.execute("INSERT INTO BLUETOOTH_notification values(?)", (today_date,))
+                curs.execute("INSERT INTO NOTIFICATION_data  values(?)", (today_date,))
+            elif tableName == 'BLUETOOTH_notification':
+                # insert today's date to the BLUETOOTH_notification table
+                curs.execute("INSERT INTO BLUETOOTH_notification  values(?)", (today_date,))
+
 
     @staticmethod
     def getBluetoothNotificationTimes():
@@ -171,8 +150,7 @@ class database:
         with conn:
             # set up the cursor
             curs=conn.cursor()
-            tableName='BLUETOOTH_notification'
-            if database.checkTableExists(curs,tableName)==True:
+            try:
                 # check if there table is empty
                 if not list(curs.execute("SELECT * FROM BLUETOOTH_notification")):
                     # return 0 if there table is empty
@@ -197,10 +175,7 @@ class database:
                     else:
                         # return 0
                         return 0
-    
-    @staticmethod
-    def checkTableExists(curs,tableName):
-        curs.execute("""SELECT COUNT(*) FROM sensehat.db WHERE table_name = '{0}' """.format(tableName.replace('\'', '\'\'')))
-        if curs.fetchone()[0] == 1:
-                return True
-        return False
+            except:
+                print('Table Does not Exist!')
+
+# database.create_tables()
