@@ -25,6 +25,10 @@ class report:
         date = []
         temp = []
         status = []
+        min_temp_ls = []
+        max_temp_ls = []
+        min_hum_ls = []
+        max_hum_ls = []
 
         # initialize three lists to hold only all data for each date
         curr_date_list = []
@@ -36,7 +40,18 @@ class report:
             # check if one row is the same as the one following it
             if sensehat_data_results[i+1] != sensehat_data_results[-1]:
                 if sensehat_data_results[i][0].split()[0] == sensehat_data_results[i+1][0].split()[0]:
-                    report.appendList(i,curr_date_list,curr_temp_list,curr_hum_list,sensehat_data_results)
+                        # extract the date to a variable names row_date
+                        row_date = sensehat_data_results[i][0].split()[0]
+                        # extract the temperature to a variable names row_temp
+                        row_temp = sensehat_data_results[i][1]
+                        # extract the humidity to a variable names row_hum
+                        row_hum = sensehat_data_results[i][2]
+                        # append the date of each row to the date list that we initalized at the top
+                        curr_date_list.append(row_date)
+                        # append the temperature of each row to the curr_temp_list list that we initalized at the top
+                        curr_temp_list.append(row_temp)
+                        # append the humidity of each row to the curr_hum_list list that we initalized at the top
+                        curr_hum_list.append(row_hum)
 
                 elif sensehat_data_results[i][0].split()[0] != sensehat_data_results[i+1][0].split()[0]:
                     report.appendList(i,curr_date_list,curr_temp_list,curr_hum_list,sensehat_data_results)
@@ -45,7 +60,19 @@ class report:
                     max_row_temp = max(curr_temp_list)
                     min_row_hum = min(curr_hum_list)
                     max_row_hum = max(curr_hum_list)
-                    report.insertLine(file_name, min_row_temp, max_row_temp,  min_row_hum, max_row_hum,date,temp,status,row_date,row_temp)
+                    # call the function check_status with the max $ min temperature and humidity
+                    #will get in return a status that describes that day
+                    row_status = report.check_status(file_name, min_row_temp, max_row_temp,  min_row_hum, max_row_hum)
+                    # append the date of each row to the date list that we initalized at the top
+                    date.append(row_date)
+                    # append the temperature of each row to the temp list that we initalized at the top
+                    temp.append(row_temp)
+                    # append the status of each row to the status list that we initalized at the top
+                    status.append(row_status)
+                    min_temp_ls.append(min_row_temp)
+                    max_temp_ls.append(max_row_temp)
+                    min_hum_ls.append(min_row_hum)
+                    max_hum_ls.append(max_row_hum)
                     report.clearList(curr_date_list,curr_temp_list,curr_hum_list)
                 # what if the data is only for one day!! it won't go inside the else statement
                 # we need to figure this part out
@@ -57,11 +84,23 @@ class report:
                 max_row_temp = max(curr_temp_list)
                 min_row_hum = min(curr_hum_list)
                 max_row_hum = max(curr_hum_list)
-                report.insertLine(file_name, min_row_temp, max_row_temp,  min_row_hum, max_row_hum,date,temp,status,row_date,row_temp)
+                # call the function check_status with the max $ min temperature and humidity
+                # will get in return a status that describes that day
+                row_status = report.check_status(file_name, min_row_temp, max_row_temp,  min_row_hum, max_row_hum)
+                # append the date of each row to the date list that we initalized at the top
+                date.append(row_date)
+                # append the temperature of each row to the temp list that we initalized at the top
+                temp.append(row_temp)
+                # append the status of each row to the status list that we initalized at the top
+                status.append(row_status)
+                min_temp_ls.append(min_row_temp)
+                max_temp_ls.append(max_row_temp)
+                min_hum_ls.append(min_row_hum)
+                max_hum_ls.append(max_row_hum)
                 report.clearList(curr_date_list,curr_temp_list,curr_hum_list)
 
         # return date and status
-        return date, status  
+        return date, status, min_temp_ls, max_temp_ls, min_hum_ls, max_hum_ls
     
     
     @staticmethod
@@ -120,7 +159,7 @@ class report:
     
     @staticmethod
     def log_to_csv(file_name):
-        date, status = report.return_rows(file_name)
+        date, status, _, _, _, _ = report.return_rows(file_name)
         # open a csv file if it exists, otherwise create a new one
         with open('report.csv', mode='w') as csv_file:
             # specified the delimiter between columns and quotechar for each column
@@ -131,6 +170,20 @@ class report:
             for d, s in zip(date, status):
                 # write each row of the list to the csv file
                 csv_file.writerow([d, s])
+
+    @staticmethod
+    def log_to_plot_csv(file_name):
+        date, _, min_temp_ls, max_temp_ls, min_hum_ls, max_hum_ls = report.return_rows(file_name)
+        # open a csv file if it exists, otherwise create a new one
+        with open('plot_data.csv', mode='w') as csv_file:
+            # specified the delimiter between columns and quotechar for each column
+            csv_file = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            # write the header of the csv file
+            csv_file.writerow(["date", "min_temp", "max_temp", "min_hum", "max_hum"])
+            # iterate though the lists 'date' and 'status'
+            for d, mt, mt, mh, mh in zip(date, min_temp_ls, max_temp_ls, min_hum_ls, max_hum_ls):
+                # write each row of the list to the csv file
+                csv_file.writerow([d, mt, mt, mh, mh])
     
     @staticmethod
     def appendList(i,curr_date_list,curr_temp_list,curr_hum_list,sensehat_data_results):
@@ -153,15 +206,7 @@ class report:
         curr_date_list.clear()
         curr_temp_list.clear()
         curr_hum_list.clear()
-    
-    @staticmethod
-    def insertLine(file_name, min_row_temp, max_row_temp,  min_row_hum, max_row_hum,date,temp,status,row_date,row_temp):
-        # call the function check_status with the max $ min temperature and humidity
-        # will get in return a status that describes that day
-        row_status = report.check_status(file_name, min_row_temp, max_row_temp,  min_row_hum, max_row_hum)
-        # append the date of each row to the date list that we initalized at the top
-        date.append(row_date)
-        # append the temperature of each row to the temp list that we initalized at the top
-        temp.append(row_temp)
-        # append the status of each row to the status list that we initalized at the top
-        status.append(row_status)
+
+# call class fnctions
+report.log_to_csv('config.json')
+report.log_to_plot_csv('config.json')

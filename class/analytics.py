@@ -7,33 +7,56 @@ from db import database
 class anaytics:
 
     @staticmethod
-    def plot_day_data_graph():
-        # call the getEnvironmentData from database class and assigne the desired values to a variable
-        list_of_rows, _, _ = database.getEnvironmentData()
+    def return_dataframe():
         # create a pandas dataframe
-        df = pd.DataFrame(list_of_rows, columns=['date', 'temperature', 'humidity'])
-        df.set_index(['date'], inplace=True)
-        df = pd.to_datetime(df)
-        # print(df.loc['2019-04-03'])
-        df['humidity'].plot()
-        #plt.plot(df)
-        plt.title('The title with font size: 20, and font:monospace')
-        plt.xlabel('xlabel')
-        plt.ylabel('ylabel')
-        plt.savefig('plot_day_data_graph.png')
+        df = pd.read_csv('plot_data.csv', parse_dates=['date'])
+        df.set_index('date', inplace=True)
+        # return the dataframe
+        return df
+
+    @staticmethod
+    def daily_temperature_plot():
+        # call the return_dataframe method
+        df = anaytics.return_dataframe()
+        # set size of the plot
+        fig, ax = plt.subplots(figsize=(15,7))
+        #plot data
+        df.plot(y=['min_temp', 'max_temp'], ax=ax)
+        plt.scatter(df.index, df['min_temp'])
+        plt.scatter(df.index, df['max_temp'])
+        # set title
+        plt.title('Temperature for each day')
+        # set x label
+        plt.xlabel('Date')
+        # set y label
+        plt.ylabel('Degree')
+        # save image
+        plt.savefig('daily_temperature_plot.png')
+        # show image
         plt.show()
 
     @staticmethod
-    def plot_daily_graph(file_name):
-        # load the csv file into a pandas dataframe
-        df = pd.read_csv(file_name)
-        df.set_index(['Date'], inplace=True)
-        print(df)
-        # df.plot()
-        # plt.title('The title with font size: 20, and font:monospace')
-        # plt.xlabel('xlabel')
-        # plt.ylabel('ylabel')
+    def daily_humidity_plot():
+        # call the return_dataframe method
+        df = anaytics.return_dataframe()
+        # set size of the plot
+        fig, ax = plt.subplots(figsize=(15,7))
+        #plot data
+        df.plot(y=['min_hum', 'max_hum'], ax=ax)
+        plt.scatter(df.index, df['min_hum'])
+        plt.scatter(df.index, df['max_hum'])
+        # set title
+        plt.title('Humidity for each day')
+        # set x label
+        plt.xlabel('Date')
+        # set y label
+        plt.ylabel('Degree')
+        # save image
+        plt.savefig('daily_humidity_plot.png')
+        # show image
+        plt.show()
         # plt.savefig('plot_daily_graph.pig')
 
-anaytics.plot_day_data_graph()
-# anaytics.plot_daily_graph('report.csv')
+# call class functions 
+anaytics.daily_temperature_plot()
+anaytics.daily_humidity_plot()
