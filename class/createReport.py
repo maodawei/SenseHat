@@ -36,18 +36,18 @@ class report:
             # check if one row is the same as the one following it
             if sensehat_data_results[i+1] != sensehat_data_results[-1]:
                 if sensehat_data_results[i][0].split()[0] == sensehat_data_results[i+1][0].split()[0]:
-                        # extract the date to a variable names row_date
-                        row_date = sensehat_data_results[i][0].split()[0]
-                        # extract the temperature to a variable names row_temp
-                        row_temp = sensehat_data_results[i][1]
-                        # extract the humidity to a variable names row_hum
-                        row_hum = sensehat_data_results[i][2]
-                        # append the date of each row to the date list that we initalized at the top
-                        curr_date_list.append(row_date)
-                        # append the temperature of each row to the curr_temp_list list that we initalized at the top
-                        curr_temp_list.append(row_temp)
-                        # append the humidity of each row to the curr_hum_list list that we initalized at the top
-                        curr_hum_list.append(row_hum)
+                    # extract the date to a variable names row_date
+                    row_date = sensehat_data_results[i][0].split()[0]
+                    # extract the temperature to a variable names row_temp
+                    row_temp = sensehat_data_results[i][1]
+                    # extract the humidity to a variable names row_hum
+                    row_hum = sensehat_data_results[i][2]
+                    # append the date of each row to the date list that we initalized at the top
+                    curr_date_list.append(row_date)
+                    # append the temperature of each row to the curr_temp_list list that we initalized at the top
+                    curr_temp_list.append(row_temp)
+                    # append the humidity of each row to the curr_hum_list list that we initalized at the top
+                    curr_hum_list.append(row_hum)
 
                 elif sensehat_data_results[i][0].split()[0] != sensehat_data_results[i+1][0].split()[0]:
                     report.appendList(i,curr_date_list,curr_temp_list,curr_hum_list,sensehat_data_results)
@@ -66,8 +66,8 @@ class report:
                     # append the status of each row to the status list that we initalized at the top
                     status.append(row_status)
                     report.clearList(curr_date_list,curr_temp_list,curr_hum_list)
-                # what if the data is only for one day!! it won't go inside the else statement
-                # we need to figure this part out
+                    # what if the data is only for one day!! it won't go inside the else statement
+                    # we need to figure this part out
                 
             else:
                 print('LAST ONE')
