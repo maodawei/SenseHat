@@ -51,7 +51,6 @@ class report:
                 # we need to figure this part out
                 
             else:
-                print('LAST ONE')
                 report.appendList(i,curr_date_list,curr_temp_list,curr_hum_list,sensehat_data_results)
                 # assign maximum and minimum temperature and humidity 
                 min_row_temp = min(curr_temp_list)
@@ -95,27 +94,27 @@ class report:
                 # calculate the difference between the minumim temperature in the range and the stored temperature
                 temp_difference = min_temperature - min_temp
                 # add a message to the status
-                status = status + str(temp_difference) + ' *C below minimum temperature and'
+                status = status + str(temp_difference) + ' *C below minimum temperature and '
             # check if maximum temperature is above the maximum temperature in the specified range
             if max_temp > max_temperature:
                 # calculate the difference between the maximum temperature in the range and the stored temperature
                 temp_difference = max_temp - min_temperature
                 # add a message to status 
-                status = status + str(temp_difference) + ' *C above maximum temperature and'
+                status = status + str(temp_difference) + ' *C above maximum temperature and '
             # check if minimum humidity is above the minimum humidity in the specified range
             if min_hum < min_humidity:
                 # calculate the difference between the minimum humidity in the range and the stored humidity
                 hum_difference = min_humidity - min_hum
                 # add a message to status
-                status = status + str(hum_difference) + ' below minimum humidity and'
+                status = status + str(hum_difference) + ' below minimum humidity and '
             # check if maximum humidity is above the maximum humidity in the specified range
             if max_hum > max_humidity:
                 # calculate the difference between the maximum humidity in the range and the stored humidity
                 hum_difference = max_hum - max_humidity
                 # add a message to status
-                status = status + str(hum_difference) + ' above maximum humidity and'
-            # remove the last four characters, which are ' and' in the status string
-            status = status[:-4]
+                status = status + str(hum_difference) + ' above maximum humidity and '
+            # remove the last five characters, which are ' and ' in the status string
+            status = status[:-5]
         # return the status
         return status
     
