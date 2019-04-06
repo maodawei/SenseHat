@@ -1,0 +1,30 @@
+With the data that you have, what kind of data visualisation graph should be used?
+
+At first, with the temperature and humidity data, we believe that the best two visualisation graph to use are line plot and scatter plot since the data are continuous values.
+
+-----------
+
+What should be represented in the above graph? Why did you make that decision?
+
+We think that the temperature and humidity are the main objects we have to plot for the users. We want our users to observe the changes in both temperature and humidity among different days. We came to this conclusion since we only have those values to use.
+
+-----------
+
+Python supports numerous data visualisation libraries. Which two libraries did you narrow it down to?
+
+We wanted to use seaborn library since it provides more options but we could not install it on the raspberry pi. We, however, used pandas and matplotlib are our main libraries to plot the 2 graphs. We combined those two libraries together and take advantage of them. We first plotted a line plot for the minimum and maximum temperature among different days and then we plotted scatter points on each day so that it makes it easier for the user to observe the changes.
+
+-----------
+
+an analytical comparison of the libraries used, advantages/disadvantages, simplicity/complexity, flexibility/configurations, anything you may think is necessary.
+
+Seaborn which we could not use in this assignment is built on matplotlib and it provides more plot types to the users. It even makes a traditional matplotlib graph looks better. 'It provides a high-level interface for drawing attractive and informative statistical graphics.' Matplotlib, on the other hand, is the essential library for plotting 2d graphs. Matplotlib is easier to use because it provides less plotting types than seaborn and it is not as a high-level library as seaborn. 'pandas is an open source, BSD-licensed library providing high-performance, easy-to-use data structures and data analysis tools for the Python programming language.' Pandas is easy to use and it is mainly used for data analysis so it does not provide a lot of plotting options.
+
+-----------
+
+
+References:
+https://seaborn.pydata.org
+https://matplotlib.org
+https://pandas.pydata.org
+https://pandas.pydata.org

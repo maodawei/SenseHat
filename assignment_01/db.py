@@ -178,3 +178,5 @@ class database:
             except:
                 print('Table Does not Exist!')
 
+# call class function
+# database.create_tables()
