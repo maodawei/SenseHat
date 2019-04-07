@@ -175,7 +175,7 @@ class report:
         # print(min_temperature, max_temperature, min_humidity, max_humidity)
         # instantiate variables ok & bad for the first word of the status
         ok = 'OK'
-        bad = 'BAD:'
+        bad = 'BAD: '
 
         # check if the temperature and the humidity are within the specified range in the json file
         if ((min_temp > min_temperature) and (max_temp < max_temperature)) and ((min_hum > min_humidity) and (max_hum < max_humidity)):
